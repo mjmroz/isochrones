@@ -1,0 +1,29 @@
+
+# Byte-compiled / optimized 
+__pycache__/
+*.py[cod]
+.pytest_cache
+
+# simple editor backups
+*~
+
+# vim backups
+.*.swp
+
+# unit tests
+.cache/
+
+# Sphinx files
+*.doctree
+docs/_sources/
+#docs/_static/
+
+# Latex files:
+*.aux
+*.log
+
+# Installation files:
+*.egg-info/
+
+/build/
+/dist/
