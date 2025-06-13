@@ -104,7 +104,7 @@ class Grid(object):
         h5file = self.hdf_filename
         try:
             path = "orig" if orig else "df"
-            df = pd.read_hdf(h5file, path)
+            df = pd.read_hdf(h5file, key=path)
         except (FileNotFoundError, KeyError):
             df = self.write_hdf(orig=orig)
         return df
@@ -113,7 +113,7 @@ class Grid(object):
         df = self.get_df(orig=orig)
         h5file = self.hdf_filename
         path = "orig" if orig else "df"
-        df.to_hdf(h5file, path)
+        df.to_hdf(h5file, key=path)
         getLogger().info("{} written to {}.".format(path, h5file))
         return df
 

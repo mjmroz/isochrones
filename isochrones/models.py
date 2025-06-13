@@ -130,7 +130,7 @@ class StellarModelGrid(Grid):
 
         if not compute:
             try:
-                dm_deep = pd.read_hdf(filename, "dm_deep")
+                dm_deep = pd.read_hdf(filename, key="dm_deep")
             except Exception:
                 compute = True
 
@@ -147,8 +147,8 @@ class StellarModelGrid(Grid):
                 deriv = np.gradient(subdf["initial_mass"], subdf["eep"])
                 subdf.loc[:, "dm_deep"] = deriv
 
-            df.dm_deep.to_hdf(filename, "dm_deep")
-            dm_deep = pd.read_hdf(filename, "dm_deep")
+            df.dm_deep.to_hdf(filename, key="dm_deep")
+            dm_deep = pd.read_hdf(filename,  key="dm_deep")
 
         return dm_deep
 

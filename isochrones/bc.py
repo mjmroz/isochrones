@@ -10,7 +10,7 @@ class BolometricCorrectionGrid(Grid):
     """Bolometric corrections in different bands, as a function of stuff
 
     Stores bolometric corrections computed on a grid of stellar atmospheric
-    parameters (Teff, logg, [Fe/H]), Av, and Rv.
+    parameters (Teff, logg, [Fe_H]), Av, and Rv.
 
     Specific implementations of this grid should subclass this
     (e.g., `MISTBolometricCorrectionGrid`).
@@ -80,7 +80,7 @@ class BolometricCorrectionGrid(Grid):
                     names = line[1:].split()
                     break
         return pd.read_csv(
-            filename, names=names, delim_whitespace=True, comment="#", index_col=self.index_cols
+            filename, names=names, sep=r'\s+', comment="#", index_col=self.index_cols
         )
 
     def get_table(self, phot, feh):
@@ -106,7 +106,7 @@ class BolometricCorrectionGrid(Grid):
                     self.extract_tarball(phot=phot)
                     filenames = glob.glob(os.path.join(self.datadir, "*.{}".format(phot)))
                 df = pd.concat([self.parse_table(f) for f in filenames]).sort_index()
-                df.to_hdf(hdf_filename, "df")
+                df.to_hdf(hdf_filename, key="df")
             df = pd.read_hdf(hdf_filename)
             df_all = pd.concat([df_all, df], axis=1)
 

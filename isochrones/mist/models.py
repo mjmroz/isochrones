@@ -98,7 +98,7 @@ class MISTIsochroneGrid(MISTModelGrid):
     default_kwargs = {"version": "1.2", "vvcrit": 0.4, "kind": "full_isos"}
     index_cols = ("log10_isochrone_age_yr", "feh", "EEP")
 
-    filename_pattern = "\.iso"
+    filename_pattern = r"\.iso"
     eep_replaces = "mass"
 
     @property
@@ -142,7 +142,7 @@ class MISTIsochroneGrid(MISTModelGrid):
                     break
         feh = cls.get_feh(filename)
         df = pd.read_csv(
-            filename, comment="#", delim_whitespace=True, skip_blank_lines=True, names=column_names
+            filename, comment="#",sep=r'\s+' , skip_blank_lines=True, names=column_names
         )
         df["feh"] = feh
         return df
@@ -255,7 +255,7 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
 
     @classmethod
     def get_mass(cls, filename):
-        m = re.search("(\d{5})M.track.eep", filename)
+        m = re.search(r"(\d{5})M.track.eep", filename)
         if m:
             return float(m.group(1)) / 100.0
         else:
@@ -270,12 +270,12 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
                     line = line.split()
                     eep_first = int(line[2])
                     eep_last = int(line[-1])
-                elif re.match("#\s+ star_age", line):
+                elif re.match(r"#\s+ star_age", line):
                     column_names = line[1:].split()
                     break
         initial_mass = cls.get_mass(filename)
         df = pd.read_csv(
-            filename, comment="#", delim_whitespace=True, skip_blank_lines=True, names=column_names
+            filename, comment="#", sep=r'\s+' , skip_blank_lines=True, names=column_names
         )
         df["initial_mass"] = initial_mass
         try:
@@ -305,14 +305,14 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
     def df_all_feh(self, feh):
         hdf_filename = self.get_feh_hdf_filename(feh)
         if os.path.exists(hdf_filename):
-            df = pd.read_hdf(hdf_filename, "df")
+            df = pd.read_hdf(hdf_filename, key="df")
         else:
             df = pd.concat([self.to_df(f) for f in self.get_feh_filenames(feh)])
             df["initial_feh"] = feh
             df = df.sort_values(by=list(self.index_cols))
             df.index = [df[c] for c in self.index_cols]
-            df.to_hdf(hdf_filename, "df")
-            df = pd.read_hdf(hdf_filename, "df")
+            df.to_hdf(hdf_filename, key="df")
+            df = pd.read_hdf(hdf_filename, key="df")
         return df
 
     def df_all_feh_interpolated(self, feh):
@@ -320,7 +320,7 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
         """
         hdf_filename = self.get_feh_interpolated_hdf_filename(feh)
         if os.path.exists(hdf_filename):
-            df_interp = pd.read_hdf(hdf_filename, "df")
+            df_interp = pd.read_hdf(hdf_filename, key="df")
         else:
             getLogger().info("Interpolating incomplete tracks for feh = {}".format(feh))
             df = self.df_all_feh(feh)
@@ -383,8 +383,8 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
                     df_interp = pd.concat([df_interp, new_data])
 
             df_interp.sort_index(inplace=True)
-            df_interp.to_hdf(hdf_filename, "df")
-            df_interp = pd.read_hdf(hdf_filename, "df")
+            df_interp.to_hdf(hdf_filename, key="df")
+            df_interp = pd.read_hdf(hdf_filename, key="df")
 
         return df_interp
 
