@@ -6,17 +6,16 @@ def readme():
     with open("README.rst") as f:
         return f.read()
 
+def get_version():
+    version_file = os.path.join(os.path.dirname(__file__), "isochrones", "version.py")
+    with open(version_file) as f:
+        code = compile(f.read(), version_file, "exec")
+        version_ns = {}
+        exec(code, version_ns)
+        return version_ns["__version__"]
 
-# Hackishly inject a constant into builtins to enable importing of the
-# package before the library is built.
-if sys.version_info[0] < 3:
-    import __builtin__ as builtins
-else:
-    import builtins
-builtins.__ISOCHRONES_SETUP__ = True
-import isochrones
+version = get_version()
 
-version = isochrones.__version__
 
 # Publish the library to PyPI.
 if "publish" in sys.argv[-1]:
@@ -64,7 +63,7 @@ setup(
         "asciitree",
         "corner",
         "astroquery",
-        "configobj",
+        #"configobj",
         "tqdm",
     ],
     zip_safe=False,
