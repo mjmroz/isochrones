@@ -27,3 +27,5 @@ docs/_sources/
 
 /build/
 /dist/
+/.history/
+/scripts/test*

@@ -407,8 +407,8 @@ class ModelGridInterpolator(object):
         if not bands:
             i_bands = np.array([], dtype=int)
         else:
+    
             i_bands = [self.bc_grid.interp.columns.index(b) for b in bands]
-
         try:
             pars = np.atleast_1d(pars).astype(float).squeeze()
             if pars.ndim > 1:

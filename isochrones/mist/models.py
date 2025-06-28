@@ -370,6 +370,7 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
                     new_eeps = np.arange(n_eep + 1, eep_max + 1)
                     new_index = pd.MultiIndex.from_product([[feh], [m], new_eeps])
                     new_data = pd.DataFrame(index=new_index, columns=df_interp.columns, dtype=float)
+                    new_data["interpolated"] = new_data["interpolated"].astype(bool)
 
                     # Interpolate values
                     norm_distance = (m - mlo) / (mhi - mlo)
@@ -429,8 +430,8 @@ class MISTEvolutionTrackGrid(MISTModelGrid):
                 deriv = np.gradient(log_age, subdf["eep"])
                 subdf.loc[:, "dt_deep"] = deriv
 
-            df.dt_deep.to_hdf(filename, "dt_deep")
-            dt_deep = pd.read_hdf(filename, "dt_deep")
+            df.dt_deep.to_hdf(filename, key= "dt_deep")
+            dt_deep = pd.read_hdf(filename,  key= "dt_deep")
 
         return dt_deep
 
